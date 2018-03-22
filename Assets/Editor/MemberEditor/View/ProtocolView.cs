@@ -23,7 +23,7 @@
         [ShowInInspector]
         [ListDrawerSettings(DraggableItems = false, IsReadOnly = true, HideAddButton = true)]
         [DisableContextMenu(true, true)]
-        List<MemberItem> mMembers;
+        List<MemberItem> mMembers = new List<MemberItem>();
 
         public void Start()
         {

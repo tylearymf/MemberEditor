@@ -22,12 +22,13 @@
         [LabelText("搜索文本")]
         [ShowInInspector]
         string mSerachText;
+        string mPreviousText;
 
         [LabelText("实体成员")]
         [ShowInInspector]
         [ListDrawerSettings(DraggableItems = false, IsReadOnly = true, HideAddButton = true)]
         [DisableContextMenu(true, true)]
-        List<MemberItem> mMembers;
+        List<MemberItem> mMembers = new List<MemberItem>();
 
         public void Start()
         {
@@ -37,21 +38,27 @@
         {
             if (mTarget == null)
             {
-                mMembers = null;
+                mMembers.Clear();
                 mPreviousTarget = null;
+                mSerachText = string.Empty;
+                mPreviousText = string.Empty;
                 return;
             }
-            if (mPreviousTarget && mTarget == mPreviousTarget) return;
+
+            if (mPreviousTarget && mTarget.Equals(mPreviousTarget) && mSerachText.Equals(mPreviousText)) return;
             mPreviousTarget = mTarget;
+            mPreviousText = mSerachText;
             mTargetName = mTarget.name;
 
             var tComponents = mTarget.GetComponents<Component>();
-            mMembers = new List<MemberItem>();
+            mMembers.Clear();
             if (tComponents == null) return;
             foreach (var tComponent in tComponents)
             {
                 if (tComponent == null || mTarget == null) continue;
-                mMembers.Add(new MemberItem(tComponent, mTarget, tComponent.GetType(), MemberHelper.cEntityPropertyFlags));
+                var tMember = new MemberItem(tComponent, mTarget, tComponent.GetType(), MemberHelper.cEntityPropertyFlags, mSerachText.Distinct(' '));
+                if (tMember.IsNullOrEmpty()) continue;
+                mMembers.Add(tMember);
             }
         }
 

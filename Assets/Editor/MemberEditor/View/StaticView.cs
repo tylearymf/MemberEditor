@@ -25,7 +25,7 @@
         [ShowInInspector]
         [ListDrawerSettings(DraggableItems = false, IsReadOnly = true, HideAddButton = true)]
         [DisableContextMenu(true, true)]
-        List<MemberItem> mMembers;
+        List<MemberItem> mMembers = new List<MemberItem>();
 
         Dictionary<string, Type> mAllTypes;
 
@@ -41,7 +41,7 @@
 
             if (mAllTypes.IsNullOrEmpty() || mSearchText.IsNullOrEmpty())
             {
-                mMembers = null;
+                mMembers.Clear();
                 return;
             }
 
@@ -52,7 +52,7 @@
                 var tContains = true;
                 foreach (var tSearchChar in tSearchChars)
                 {
-                    if (tTypeName.IndexOf(tSearchChar) == -1)
+                    if (!tTypeName.Contains(tSearchChar))
                     {
                         tContains = false;
                         break;
@@ -65,10 +65,10 @@
 
             if (tMatchTypes.IsNullOrEmpty())
             {
-                mMembers = null;
+                mMembers.Clear();
                 return;
             }
-            mMembers = new List<MemberItem>(tMatchTypes.GetCountIgnoreNull());
+            mMembers.Clear();
             foreach (var tType in tMatchTypes)
             {
                 mMembers.Add(new MemberItem(null, null, tType, MemberHelper.cStaticPropertyFlags));

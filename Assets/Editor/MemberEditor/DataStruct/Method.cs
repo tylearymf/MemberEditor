@@ -40,7 +40,8 @@
                 {
                     try
                     {
-                        info.Invoke(target, null);
+                        var tResult = info.Invoke(target, null);
+                        Debug.Log(tResult);
                     }
                     catch (Exception ex)
                     {
@@ -59,7 +60,8 @@
                 {
                     try
                     {
-                        info.Invoke(target, tParamObjs);
+                        var tResult = info.Invoke(target, tParamObjs);
+                        Debug.Log(tResult);
                     }
                     catch (Exception ex)
                     {

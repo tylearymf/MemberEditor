@@ -16,7 +16,7 @@
         UnityEngine.Object mTarget;
         string mComponentName;
 
-        public MemberItem(UnityEngine.Object pComponent, UnityEngine.Object pTarget, Type pType, BindingFlags pFlags)
+        public MemberItem(UnityEngine.Object pComponent, UnityEngine.Object pTarget, Type pType, BindingFlags pFlags, List<string> pMatchTexts = null)
         {
             mComponent = pComponent;
             mTarget = pTarget;
@@ -29,6 +29,20 @@
 
             foreach (var item in mType.GetMembers(pFlags))
             {
+                if (!pMatchTexts.IsNullOrEmpty())
+                {
+                    var tContains = true;
+                    foreach (var tText in pMatchTexts)
+                    {
+                        if (!item.Name.Contains(tText))
+                        {
+                            tContains = false;
+                            break;
+                        }
+                    }
+                    if (!tContains) continue;
+                }
+
                 switch (item.MemberType)
                 {
                     case MemberTypes.Constructor:
@@ -76,6 +90,11 @@
         [ListDrawerSettings(DraggableItems = false, IsReadOnly = true, HideAddButton = true)]
         [DisableContextMenu(true, true)]
         List<Method> mMethods;
+
+        public bool IsNullOrEmpty()
+        {
+            return mFields.IsNullOrEmpty() && mPropertys.IsNullOrEmpty() && mMethods.IsNullOrEmpty();
+        }
 
         public string TitleName()
         {
