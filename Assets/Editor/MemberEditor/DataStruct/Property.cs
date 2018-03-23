@@ -10,11 +10,30 @@
     using Sirenix.Utilities.Editor;
     using System.Text.RegularExpressions;
 
+    [System.Serializable]
     public class Property : BaseMember<PropertyInfo>, IMemberTitle
     {
-        public Property(PropertyInfo pInfo, UnityEngine.Object pTarget) : base(pInfo, pTarget)
+        public Property(PropertyInfo pInfo, string pTypeFullName, UnityEngine.Object pTarget) : base(pInfo, pTypeFullName, pTarget)
         {
+            mMemberName = pInfo.Name;
             mInfoName = pInfo == null ? string.Empty : string.Format("{0} ({1}) ", pInfo.Name, pInfo.PropertyType.ToString());
+        }
+
+        public override PropertyInfo info
+        {
+            get
+            {
+                if (mInfo == null && !mTypeFullName.IsNullOrEmpty() && !mMemberName.IsNullOrEmpty() && !MemberHelper.allTypes.IsNullOrEmpty())
+                {
+                    Type tType = null;
+                    if (MemberHelper.allTypes.TryGetValue(mTypeFullName.ToLower(), out tType))
+                    {
+                        mInfo = tType.GetProperty(mMemberName, BindingFlags.Static | BindingFlags.Instance |
+                        BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic);
+                    }
+                }
+                return mInfo;
+            }
         }
 
         public override void SetValue<T>(T pVal)

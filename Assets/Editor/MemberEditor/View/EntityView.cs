@@ -10,16 +10,18 @@
     /// <summary>
     /// 实体调用界面
     /// </summary>
+    [System.Serializable]
     public class EntityView : IView, IMemberTitle
     {
-        [InfoBox("从场景中拖入查看的对象，然后点击对应的按钮设置其字段、属性或者调用其方法（可以输入部分搜索成员）")]
+        [InfoBox("从Hierarchy面板中拖入查看的对象")]
         [LabelText("目标")]
         [ShowInInspector]
         GameObject mTarget;
         GameObject mPreviousTarget;
         string mTargetName;
 
-        [LabelText("搜索文本")]
+        [InfoBox("输入关键字搜索成员，多个关键字以空格隔开")]
+        [LabelText("搜索成员")]
         [ShowInInspector]
         string mSerachText;
         string mPreviousText;
@@ -45,7 +47,7 @@
                 return;
             }
 
-            if (mPreviousTarget && mTarget.Equals(mPreviousTarget) && mSerachText.Equals(mPreviousText)) return;
+            if (mPreviousTarget && mTarget == mPreviousTarget && mSerachText == mPreviousText) return;
             mPreviousTarget = mTarget;
             mPreviousText = mSerachText;
             mTargetName = mTarget.name;

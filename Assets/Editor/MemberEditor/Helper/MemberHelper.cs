@@ -7,8 +7,11 @@
     using System.Reflection;
     using System.Linq;
     using Sirenix.Utilities.Editor;
-    using UnityEditor.Callbacks;
     using Sirenix.OdinInspector.Editor;
+    using Sirenix.OdinInspector.Editor.Drawers;
+    using Sirenix.Serialization;
+    using Sirenix.Utilities.Editor.CodeGeneration;
+    using Sirenix.Utilities;
 
     static public class MemberHelper
     {
@@ -26,7 +29,12 @@
         static HashSet<string> sIngoreNamespaces = new HashSet<string>()
         {
             typeof(MemberHelper).Namespace,
-            typeof(OdinEditorWindow).Namespace
+            typeof(OdinEditorWindow).Namespace,
+            typeof(HideIfAttributeDrawer).Namespace,
+            typeof(IDataWriter).Namespace,
+            typeof(DragHandle).Namespace,
+            typeof(CodeWriter).Namespace,
+            typeof(WeakValueGetter).Namespace,
         };
         static HashSet<Type> sIngoreBaseTypes = new HashSet<Type>()
         {
@@ -62,25 +70,23 @@
             if (tCustomList == null) return;
             foreach (var item in tCustomList)
             {
-                var tAttributes = item.GetCustomAttributes(false);
-                foreach (var tAtt in tAttributes)
+                var tAtt = item.GetCustomAttributes(false).Single(x => x is MemeberDrawerAttribute);
+                if (tAtt == null) continue;
+                var tDrawerAtt = (MemeberDrawerAttribute)tAtt;
+                var tMemberType = tDrawerAtt.memberType;
+                if (!sDrawerInfoDic.ContainsKey(tMemberType))
                 {
-                    var tDrawerAtt = (MemeberDrawerAttribute)tAtt;
-                    var tMemberType = tDrawerAtt.memberType;
-                    if (!sDrawerInfoDic.ContainsKey(tMemberType))
-                    {
-                        sDrawerInfoDic.Add(tMemberType, new Dictionary<string, DrawerInfo>());
-                    }
-                    var tDrawer = new DrawerInfo(item, tMemberType);
-                    sDrawerInfoDic[tMemberType][tDrawer.typeName] = tDrawer;
+                    sDrawerInfoDic.Add(tMemberType, new Dictionary<string, DrawerInfo>());
                 }
+                var tDrawer = new DrawerInfo(item, tMemberType);
+                sDrawerInfoDic[tMemberType][tDrawer.typeName] = tDrawer;
             }
         }
 
         static void LoadAssembly()
         {
             if (!sAllTypes.IsNullOrEmpty()) return;
-            string[] tAssemblys = { "Assembly-CSharp", "Assembly-CSharp-firstpass", "Assembly-CSharp-Editor", "Assembly-CSharp-firstpass", };
+            string[] tAssemblys = { "Assembly-CSharp", "Assembly-CSharp-firstpass", "Assembly-CSharp-Editor", "Assembly-CSharp-firstpass", "UnityEngine" };
             sAllTypes = new Dictionary<string, Type>();
             foreach (var tAssemblyName in tAssemblys)
             {

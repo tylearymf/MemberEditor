@@ -6,7 +6,7 @@
     using System.Reflection;
     using UnityEngine;
 
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class MemeberDrawerAttribute : Attribute
     {
         MemberTypes mMemberType;

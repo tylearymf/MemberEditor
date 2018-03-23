@@ -11,13 +11,14 @@
     /// <summary>
     /// 通知下发界面
     /// </summary>
+    [System.Serializable]
     public class NotifyView : IView, IMemberTitle
     {
         [InfoBox("通知界面：暂无介绍")]
         [LabelText("搜索文本")]
         [ShowInInspector]
-        string mSearchText = string.Empty;
-        string mPreviousText = null;
+        string mSearchText;
+        string mPreviousText;
 
         [LabelText("通知成员")]
         [ShowInInspector]

@@ -11,13 +11,14 @@
     /// <summary>
     /// 协议发送界面
     /// </summary>
+    [System.Serializable]
     public class ProtocolView : IView, IMemberTitle
     {
         [InfoBox("协议界面：暂无介绍")]
         [LabelText("搜索文本")]
         [ShowInInspector]
-        string mSearchText = string.Empty;
-        string mPreviousText = null;
+        string mSearchText;
+        string mPreviousText;
 
         [LabelText("协议成员")]
         [ShowInInspector]

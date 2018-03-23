@@ -10,9 +10,10 @@
     using Sirenix.Utilities.Editor;
     using System.Text.RegularExpressions;
 
+    [System.Serializable]
     public class Method : BaseMember<MethodInfo>, IMemberTitle
     {
-        public Method(MethodInfo pInfo, UnityEngine.Object pTarget) : base(pInfo, pTarget)
+        public Method(MethodInfo pInfo, string pTypeFullName, UnityEngine.Object pTarget) : base(pInfo, pTypeFullName, pTarget)
         {
             var tParams = string.Empty;
             if (pInfo.GetParameters() != null && pInfo.GetParameters().Length > 0)
@@ -23,7 +24,25 @@
                 }
                 tParams = tParams.Substring(0, tParams.Length - 1);
             }
-            mInfoName = pInfo == null ? string.Empty : string.Format("{1} {0} ({2})", pInfo.Name, pInfo.ReturnType.ToString(), tParams);
+            mInfoName = string.Format("{1} {0} ({2})", pInfo.Name, pInfo.ReturnType.ToString(), tParams);
+            mMemberName = pInfo.Name;
+        }
+
+        public override MethodInfo info
+        {
+            get
+            {
+                if (mInfo == null && !mTypeFullName.IsNullOrEmpty() && !mMemberName.IsNullOrEmpty() && !MemberHelper.allTypes.IsNullOrEmpty())
+                {
+                    Type tType = null;
+                    if (MemberHelper.allTypes.TryGetValue(mTypeFullName.ToLower(), out tType))
+                    {
+                        mInfo = tType.GetMethod(mMemberName, BindingFlags.Static | BindingFlags.Instance |
+                        BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic);
+                    }
+                }
+                return mInfo;
+            }
         }
 
         public override void Call(params object[] pParams)

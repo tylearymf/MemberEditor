@@ -7,7 +7,12 @@
     using UnityEngine;
     using System;
     using Sirenix.Utilities.Editor;
+    using Sirenix.Utilities;
 
+    /// <summary>
+    /// 设置界面
+    /// </summary>
+    [System.Serializable]
     public class SettingView : IView, IMemberTitle
     {
         [ColorPalette("Fall")]

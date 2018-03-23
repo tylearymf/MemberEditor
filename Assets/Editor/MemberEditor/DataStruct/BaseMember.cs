@@ -8,22 +8,27 @@
     using System;
     using Sirenix.Utilities.Editor;
 
+    [System.Serializable]
     public abstract class BaseMember<T> where T : class
     {
-        public BaseMember(T pInfo, UnityEngine.Object pTarget)
+        public BaseMember(T pInfo, string pTypeFullName, UnityEngine.Object pTarget)
         {
             mInfo = pInfo;
+            mTypeFullName = pTypeFullName;
             mTarget = pTarget;
         }
 
         protected T mInfo;
+        protected string mTypeFullName;
+        protected string mMemberName;
         protected UnityEngine.Object mTarget;
         protected IPropertyValueEntry mEntry;
         protected GUIContent mContent;
         protected Rect mRect;
         protected string mInfoName;
 
-        public T info { get { return mInfo; } }
+        public abstract T info { get; }
+
         public Rect rect
         {
             set { mRect = value; }

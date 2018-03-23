@@ -10,11 +10,9 @@
     public sealed class MemberEditor : OdinEditorWindow
     {
         [MenuItem("Window/MemberEditor #&v")]
-        static void Open()
+        static public void Open()
         {
-            var tView = GetWindow<MemberEditor>();
-            tView.UseScrollView = true;
-            tView.Show();
+            GetWindow<MemberEditor>().Show();
         }
 
         protected override void OnInitialize()

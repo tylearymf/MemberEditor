@@ -13,13 +13,20 @@
     /// <summary>
     /// 静态调用界面
     /// </summary>
+    [System.Serializable]
     public class StaticView : IView, IMemberTitle
     {
-        [InfoBox("例如需要调用A类下的b的静态方法，就在输入框中输入“A”，然后选中“A”，继续输入“b”，最后点击按钮调用“b”")]
-        [LabelText("搜索文本")]
+        [InfoBox("输入关键字搜索脚本")]
+        [LabelText("搜索脚本")]
         [ShowInInspector]
-        string mSearchText;
-        string mPreviousText;
+        string mSearchClassText;
+        string mPreviousClassText;
+
+        [InfoBox("输入关键字搜索成员，多个关键字以空格隔开")]
+        [LabelText("搜索成员")]
+        [ShowInInspector]
+        string mSearchMemberText;
+        string mPreviousMemberText;
 
         [LabelText("静态成员")]
         [ShowInInspector]
@@ -36,16 +43,17 @@
 
         public void Update()
         {
-            if (mSearchText == mPreviousText) return;
-            mPreviousText = mSearchText;
+            if (mSearchClassText == mPreviousClassText && mSearchMemberText == mPreviousMemberText) return;
+            mPreviousClassText = mSearchClassText;
+            mPreviousMemberText = mSearchMemberText;
 
-            if (mAllTypes.IsNullOrEmpty() || mSearchText.IsNullOrEmpty())
+            if (mAllTypes.IsNullOrEmpty() || mSearchClassText.IsNullOrEmpty())
             {
                 mMembers.Clear();
                 return;
             }
 
-            var tSearchChars = mSearchText.Distinct(' ');
+            var tSearchChars = mSearchClassText.Distinct(' ');
             var tMatchTypes = new HashSet<Type>();
             foreach (var tTypeName in mAllTypes.Keys)
             {
@@ -71,13 +79,15 @@
             mMembers.Clear();
             foreach (var tType in tMatchTypes)
             {
-                mMembers.Add(new MemberItem(null, null, tType, MemberHelper.cStaticPropertyFlags));
+                var tMember = new MemberItem(null, null, tType, MemberHelper.cStaticPropertyFlags, mSearchMemberText.Distinct(' '));
+                if (tMember.IsNullOrEmpty()) continue;
+                mMembers.Add(tMember);
             }
         }
 
         public string TitleName()
         {
-            return mSearchText;
+            return mSearchClassText;
         }
 
         public bool IsClickable()

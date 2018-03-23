@@ -8,6 +8,7 @@
     using UnityEngine;
     using System;
 
+    [System.Serializable]
     public class MemberItem : IMemberTitle
     {
         UnityEngine.Object mComponent;
@@ -51,13 +52,13 @@
                         break;
                     case MemberTypes.Field:
                         if (item.Name.Contains("BackingField")) continue;
-                        mFields.Add(new Field(item as FieldInfo, mComponent));
+                        mFields.Add(new Field(item as FieldInfo, mType.FullName, mComponent));
                         break;
                     case MemberTypes.Method:
-                        mMethods.Add(new Method(item as MethodInfo, mComponent));
+                        mMethods.Add(new Method(item as MethodInfo, mType.FullName, mComponent));
                         break;
                     case MemberTypes.Property:
-                        mPropertys.Add(new Property(item as PropertyInfo, mComponent));
+                        mPropertys.Add(new Property(item as PropertyInfo, mType.FullName, mComponent));
                         break;
                     case MemberTypes.TypeInfo:
                         break;

@@ -4,24 +4,17 @@ using UnityEngine;
 
 public class NewBehaviourScript1 : MonoBehaviour
 {
+    string a1;
+    float b1;
+    public bool c1;
+    public string d1 { get; private set; }
+    public long e1 { set; get; }
+    static bool f1;
+    static bool g1 { get; set; }
 
-    string a;
-    float b;
-    public bool c;
+    void Start() { }
 
-    public string d { get; private set; }
-    public long e { set; get; }
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    void Update() { }
 
     string A(string a, Vector3 b, float c, Transform d, long e, int f)
     {
@@ -29,11 +22,8 @@ public class NewBehaviourScript1 : MonoBehaviour
         return string.Empty;
     }
 
-    static void B(string b ,string c)
+    static void B(string b, string c)
     {
         Debug.LogError(b + " " + c);
     }
-
-    static bool abc;
-    static bool abcd { get; set; }
 }

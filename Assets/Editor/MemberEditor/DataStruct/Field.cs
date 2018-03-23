@@ -6,11 +6,30 @@
     using Sirenix.Utilities.Editor;
     using System.Text.RegularExpressions;
 
+    [System.Serializable]
     public class Field : BaseMember<FieldInfo>, IMemberTitle
     {
-        public Field(FieldInfo pInfo, UnityEngine.Object pTarget) : base(pInfo, pTarget)
+        public Field(FieldInfo pInfo, string pTypeFullName, UnityEngine.Object pTarget) : base(pInfo, pTypeFullName, pTarget)
         {
+            mMemberName = pInfo.Name;
             mInfoName = pInfo == null ? string.Empty : string.Format("{0} ({1}) ", pInfo.Name, pInfo.FieldType.ToString());
+        }
+
+        public override FieldInfo info
+        {
+            get
+            {
+                if (mInfo == null && !mTypeFullName.IsNullOrEmpty() && !mMemberName.IsNullOrEmpty() && !MemberHelper.allTypes.IsNullOrEmpty())
+                {
+                    Type tType = null;
+                    if (MemberHelper.allTypes.TryGetValue(mTypeFullName.ToLower(), out tType))
+                    {
+                        mInfo = tType.GetField(mMemberName, BindingFlags.Static | BindingFlags.Instance |
+                        BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic);
+                    }
+                }
+                return mInfo;
+            }
         }
 
         public override void SetValue<T>(T pVal)
