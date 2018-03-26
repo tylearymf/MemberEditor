@@ -23,7 +23,15 @@
         {
             var tInfo = pInfo.info;
             if (!mValues.ContainsKey(pIndex)) mValues.Add(pIndex, Vector3.zero);
-            mValues[pIndex] = EditorGUI.Vector3Field(pInfo.rect, string.Empty, mValues[pIndex]);
+            var tName = tInfo.GetParameters()[pIndex].Name;
+            var tRect = pInfo.rect;
+            var tLabelWidth = tName.Length * 15;
+            tRect.size = new Vector2(tLabelWidth, 15);
+            EditorGUI.LabelField(tRect, tName);
+            tRect = pInfo.rect;
+            tRect.position = new Vector2(tRect.position.x + tLabelWidth, tRect.position.y);
+            tRect.size = new Vector2(tRect.size.x - tLabelWidth, tRect.size.y);
+            mValues[pIndex] = EditorGUI.Vector3Field(tRect, string.Empty, mValues[pIndex]);
             return mValues[pIndex];
         }
 
