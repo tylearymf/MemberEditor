@@ -26,4 +26,6 @@ public class NewBehaviourScript : MonoBehaviour
     {
         Debug.LogError(b + " " + c);
     }
+
+    public List<string> abc;
 }

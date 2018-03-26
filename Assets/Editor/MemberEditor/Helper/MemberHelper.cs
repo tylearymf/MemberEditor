@@ -12,6 +12,7 @@
     using Sirenix.Serialization;
     using Sirenix.Utilities.Editor.CodeGeneration;
     using Sirenix.Utilities;
+    using UnityEditor;
 
     static public class MemberHelper
     {
@@ -181,6 +182,71 @@
                 tHashSet.Add(item.ToLower());
             }
             return tHashSet.ToList();
+        }
+        #endregion
+
+        #region gui
+        static public void DrawerListItem<T>(IList<T> pSources, List<string> pLabelNames, Rect pRect, int pIntervalWidth, int pItemHeigth, Action<int, List<T>> pOnValueChange, params Func<T>[] pInputFields)
+        {
+            var tCount = pSources.Count;
+            var tWidth = (pRect.size.x - pIntervalWidth * (tCount - 1)) / tCount;
+            for (int i = 0, imax = pSources.Count; i < imax; i++)
+            {
+                var tRect = pRect;
+
+                EditorGUI.BeginChangeCheck();
+                tRect.position = pRect.position + new Vector2(0, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 0, 0);
+                var tLabelWidth = pLabelNames[0].Length * 7;
+                tRect.size = new Vector2(tLabelWidth, pItemHeigth);
+                EditorGUI.LabelField(tRect, new GUIContent(pLabelNames[0]));
+                tRect.size = new Vector2(tWidth - tLabelWidth, pItemHeigth);
+                tRect.position = pRect.position + new Vector2(tLabelWidth + tWidth * 0, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 0, 0);
+                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
+                T t1 = default(T);
+                if (pInputFields[0] != null)
+                {
+                    t1 = pInputFields[0]();
+                }
+                //var t1 = EditorGUI.IntField(tRect, pSources[i].width);
+
+                tRect.position = pRect.position + new Vector2(tWidth * 1, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 1, 0);
+                tLabelWidth = pLabelNames[1].Length * 7;
+                tRect.size = new Vector2(tLabelWidth, pItemHeigth);
+                EditorGUI.LabelField(tRect, new GUIContent(pLabelNames[1]));
+                tRect.size = new Vector2(tWidth - tLabelWidth, pItemHeigth);
+                tRect.position = pRect.position + new Vector2(tLabelWidth + tWidth * 1, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 1, 0);
+                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
+                T t2 = default(T);
+                if (pInputFields[1] != null)
+                {
+                    t2 = pInputFields[1]();
+                }
+
+                tRect.position = pRect.position + new Vector2(tWidth * 2, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 2, 0);
+                tLabelWidth = pLabelNames[2].Length * 7;
+                tRect.size = new Vector2(tLabelWidth, pItemHeigth);
+                EditorGUI.LabelField(tRect, new GUIContent(pLabelNames[2]));
+                tRect.size = new Vector2(tWidth - tLabelWidth, pItemHeigth);
+                tRect.position = pRect.position + new Vector2(tLabelWidth + tWidth * 2, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 2, 0);
+                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
+                //var t3 = EditorGUI.IntField(tRect, pSources[i].refreshRate);
+                T t3 = default(T);
+                if (pInputFields[1] != null)
+                {
+                    t3 = pInputFields[2]();
+                }
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (pOnValueChange != null)
+                    {
+                        pOnValueChange(i, new List<T>()
+                        {
+                            t1,t2,t3
+                        });
+                    }
+                }
+            }
         }
         #endregion
     }

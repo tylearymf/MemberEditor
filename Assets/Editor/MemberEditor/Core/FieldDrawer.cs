@@ -20,7 +20,7 @@
             if (tInfoDic == null) return;
 
             var tHeight = 0;
-            if (tInfoDic.ContainsKey(tMemberTypeName)) tHeight = tInfoDic[tMemberTypeName].LayoutHeight();
+            if (tInfoDic.ContainsKey(tMemberTypeName)) tHeight = tInfoDic[tMemberTypeName].LayoutHeight(pEntry.SmartValue);
             else tHeight = MemberHelper.cPropertyDefaultHeight;
 
             pEntry.SmartValue.rect = EditorGUILayout.GetControlRect(false, tHeight);

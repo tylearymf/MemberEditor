@@ -30,7 +30,7 @@
             return tVector3;
         }
 
-        public override int LayoutHeight()
+        public override int LayoutHeight(Field pInfo)
         {
             return 30;
         }

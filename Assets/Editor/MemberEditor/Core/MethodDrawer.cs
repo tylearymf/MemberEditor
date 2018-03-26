@@ -29,7 +29,7 @@
                 var tMemberTypeName = tParam.ParameterType.FullName;
                 var tDrawerInfo = tInfoDic.TryGetValue(tMemberTypeName, null);
 
-                var tHeight = tDrawerInfo == null ? MemberHelper.cPropertyDefaultHeight : tDrawerInfo.LayoutHeight();
+                var tHeight = tDrawerInfo == null ? MemberHelper.cPropertyDefaultHeight : tDrawerInfo.LayoutHeight(pEntry.SmartValue);
                 var tRect = EditorGUILayout.GetControlRect(false, tHeight);
 
                 pEntry.SmartValue.rect = new Rect(tRect.position, tRect.size);

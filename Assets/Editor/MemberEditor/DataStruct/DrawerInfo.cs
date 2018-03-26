@@ -72,11 +72,11 @@
             return null;
         }
 
-        public int LayoutHeight()
+        public int LayoutHeight<T>(T pInfo)
         {
-            if (mBaseFieldDrawer != null) return mBaseFieldDrawer.LayoutHeight();
-            else if (mBasePropertyDrawer != null) return mBasePropertyDrawer.LayoutHeight();
-            else if (mBaseMethodDrawer != null) return mBaseMethodDrawer.LayoutHeight();
+            if (mBaseFieldDrawer != null) return mBaseFieldDrawer.LayoutHeight(pInfo as Field);
+            else if (mBasePropertyDrawer != null) return mBasePropertyDrawer.LayoutHeight(pInfo as Property);
+            else if (mBaseMethodDrawer != null) return mBaseMethodDrawer.LayoutHeight(pInfo as Method);
 
             LogErrorInfo();
             return MemberHelper.cPropertyDefaultHeight;

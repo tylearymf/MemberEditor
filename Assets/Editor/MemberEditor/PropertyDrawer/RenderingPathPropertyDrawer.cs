@@ -36,7 +36,7 @@
             return tValue;
         }
 
-        public override int LayoutHeight()
+        public override int LayoutHeight(Property pInfo)
         {
             return 15;
         }

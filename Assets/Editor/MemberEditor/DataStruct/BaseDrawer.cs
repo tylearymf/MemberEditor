@@ -20,6 +20,6 @@
         /// 返回该成员的布局高度
         /// </summary>
         /// <returns></returns>
-        public abstract int LayoutHeight();
+        public abstract int LayoutHeight(T pInfo);
     }
 }

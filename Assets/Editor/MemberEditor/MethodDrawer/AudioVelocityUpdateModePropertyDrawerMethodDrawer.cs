@@ -28,7 +28,7 @@
             return (int)mValues[pIndex];
         }
 
-        public override int LayoutHeight()
+        public override int LayoutHeight(Method pInfo)
         {
             return 15;
         }
