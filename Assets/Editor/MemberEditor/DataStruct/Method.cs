@@ -37,8 +37,12 @@
                     Type tType = null;
                     if (MemberHelper.allTypes.TryGetValue(mTypeFullName.ToLower(), out tType))
                     {
-                        mInfo = tType.GetMethod(mMemberName, BindingFlags.Static | BindingFlags.Instance |
-                        BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic);
+                        try
+                        {
+                            mInfo = tType.GetMethod(mMemberName, BindingFlags.Static | BindingFlags.Instance |
+                            BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic);
+                        }
+                        catch { }
                     }
                 }
                 return mInfo;

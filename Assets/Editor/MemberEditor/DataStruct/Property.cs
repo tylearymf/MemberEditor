@@ -17,6 +17,12 @@
         {
             mMemberName = pInfo.Name;
             mInfoName = pInfo == null ? string.Empty : string.Format("{0} ({1}) ", pInfo.Name, pInfo.PropertyType.ToString());
+
+            if (!string.IsNullOrEmpty(mInfoName))
+            {
+                var tMatch = Regex.Match(mInfoName, @"<(?<Name>\w+)>k__BackingField");
+                mInfoName = tMatch.Success ? tMatch.Groups["Name"].Value : mInfoName;
+            }
         }
 
         public override PropertyInfo info
@@ -62,9 +68,7 @@
 
         public string TitleName()
         {
-            if (string.IsNullOrEmpty(mInfoName)) return string.Empty;
-            var tMatch = Regex.Match(mInfoName, @"<(?<Name>\w+)>k__BackingField");
-            return tMatch.Success ? tMatch.Groups["Name"].Value : mInfoName;
+            return mInfoName;
         }
 
         public bool IsClickable()
