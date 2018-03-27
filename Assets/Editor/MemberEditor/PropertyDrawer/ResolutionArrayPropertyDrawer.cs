@@ -13,6 +13,8 @@
     public class ResolutionArrayPropertyDrawer : BaseDrawer<Property>
     {
         List<Resolution> mValues;
+        bool mShowIndex = false;
+
         public override string typeName
         {
             get
@@ -30,77 +32,36 @@
             }
             if (mValues == null) return null;
 
-            EditorGUI.BeginDisabledGroup(!pInfo.info.CanWrite);
-            var tRect = pInfo.rect;
-            tRect.size = new Vector2(tRect.size.x, 15);
-            int tNewCount = Mathf.Max(0, EditorGUI.IntField(tRect, "Size", mValues.Count));
-            while (tNewCount < mValues.Count)
+            MemberHelper.DrawerListItem(mValues, new List<string>() { "width", "height", "refreshRate" }, pRect: pInfo.rect, pDisable: !pInfo.info.CanWrite,
+               pShowIndex: ref mShowIndex, pIntervalWidth: 10, pOnValueChange: (pIdx, pVal) =>
             {
-                mValues.RemoveAt(mValues.Count - 1);
-            }
-            while (tNewCount > mValues.Count)
-            {
-                mValues.Add(new Resolution());
-            }
-            var tInteval = 10;
-            var tWidth = (pInfo.rect.size.x - tInteval * (3 - 1)) / 3;
-            string[] tLabelNames = { "width", "height", "refreshRate123124" };
-            //var tLabelWidth = tLabelNames.OrderByDescending(x => x.Length).FirstOrDefault().Length * 7;
-            for (int i = 0, imax = mValues.Count; i < imax; i++)
-            {
-                tRect = pInfo.rect;
-
-                EditorGUI.BeginChangeCheck();
-                tRect.position = pInfo.rect.position + new Vector2(0, (i + 1) * 15) + new Vector2(tInteval * 0, 0);
-                var tLabelWidth = tLabelNames[0].Length * 7;
-                tRect.size = new Vector2(tLabelWidth, 15);
-                EditorGUI.LabelField(tRect, new GUIContent(tLabelNames[0]));
-                tRect.size = new Vector2(tWidth - tLabelWidth, 15);
-                tRect.position = pInfo.rect.position + new Vector2(tLabelWidth + tWidth * 0, (i + 1) * 15) + new Vector2(tInteval * 0, 0);
-                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
-                var t1 = EditorGUI.IntField(tRect, mValues[i].width);
-
-                tRect.position = pInfo.rect.position + new Vector2(tWidth * 1, (i + 1) * 15) + new Vector2(tInteval * 1, 0);
-                tLabelWidth = tLabelNames[1].Length * 7;
-                tRect.size = new Vector2(tLabelWidth, 15);
-                EditorGUI.LabelField(tRect, new GUIContent(tLabelNames[1]));
-                tRect.size = new Vector2(tWidth - tLabelWidth, 15);
-                tRect.position = pInfo.rect.position + new Vector2(tLabelWidth + tWidth * 1, (i + 1) * 15) + new Vector2(tInteval * 1, 0);
-                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
-                var t2 = EditorGUI.IntField(tRect, mValues[i].height);
-
-                tRect.position = pInfo.rect.position + new Vector2(tWidth * 2, (i + 1) * 15) + new Vector2(tInteval * 2, 0);
-                tLabelWidth = tLabelNames[2].Length * 7;
-                tRect.size = new Vector2(tLabelWidth, 15);
-                EditorGUI.LabelField(tRect, new GUIContent(tLabelNames[2]));
-                tRect.size = new Vector2(tWidth - tLabelWidth, 15);
-                tRect.position = pInfo.rect.position + new Vector2(tLabelWidth + tWidth * 2, (i + 1) * 15) + new Vector2(tInteval * 2, 0);
-                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
-                var t3 = EditorGUI.IntField(tRect, mValues[i].refreshRate);
-                if (EditorGUI.EndChangeCheck())
+                mValues[pIdx] = new Resolution()
                 {
-                    mValues[i] = new Resolution()
-                    {
-                        width = t1,
-                        height = t2,
-                        refreshRate = t3,
-                    };
-                }
-            }
-            EditorGUI.EndDisabledGroup();
-
+                    width = (int)pVal[0],
+                    height = (int)pVal[1],
+                    refreshRate = (int)pVal[2],
+                };
+            }, pInputFields: new Func<Rect, Resolution, object>[]
+            {
+                (pRect,pVal) =>
+                {
+                    return EditorGUILayout.IntField(pVal.width);
+                },
+                (pRect,pVal) =>
+                {
+                    return EditorGUILayout.IntField(pVal.height);
+                 },
+                 (pRect,pVal) =>
+                 {
+                     return EditorGUILayout.IntField(pVal.refreshRate);
+                 },
+            });
             return mValues.ToArray();
         }
 
         public override int LayoutHeight(Property pInfo)
         {
-            var tHeight = 15;
-            if (pInfo.info.CanRead)
-            {
-                var tArray = pInfo.GetValue<Resolution[]>();
-                tHeight = Mathf.Max((tArray.GetCountIgnoreNull() + 1) * 15, 15);
-            }
-            return tHeight;
+            return 0;
         }
     }
 }

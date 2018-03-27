@@ -183,70 +183,74 @@
             }
             return tHashSet.ToList();
         }
+
+        static public int GetLabelWidth(this string pStr)
+        {
+            return pStr.IsNullOrEmpty() ? 0 : pStr.Length * 7;
+        }
         #endregion
 
         #region gui
-        static public void DrawerListItem<T>(IList<T> pSources, List<string> pLabelNames, Rect pRect, int pIntervalWidth, int pItemHeigth, Action<int, List<T>> pOnValueChange, params Func<T>[] pInputFields)
+        static public void DrawerListItem<T>(List<T> pSources, List<string> pLabelNames, Rect pRect, bool pDisable, ref bool pShowIndex, int pIntervalWidth, Action<int, List<object>> pOnValueChange, params Func<Rect, T, object>[] pInputFields)
+        where T : new()
         {
-            var tCount = pSources.Count;
-            var tWidth = (pRect.size.x - pIntervalWidth * (tCount - 1)) / tCount;
+            if (pSources.IsNullOrEmpty() || pLabelNames.IsNullOrEmpty() || pInputFields.IsNullOrEmpty()
+                || (pLabelNames.GetCountIgnoreNull() != pInputFields.GetCountIgnoreNull())) return;
+
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.BeginHorizontal();
+            GUI.enabled = !pDisable;
+            EditorGUILayout.LabelField("size", GUILayout.Width(30));
+            var tNewCount = EditorGUILayout.IntField(pSources.Count, GUILayout.MaxWidth(70));
+            GUI.enabled = true;
+            EditorGUILayout.LabelField("show index", GUILayout.Width(70));
+            pShowIndex = EditorGUILayout.Toggle(pShowIndex, GUILayout.MaxWidth(100));
+            EditorGUILayout.EndHorizontal();
+            while (tNewCount < pSources.Count)
+            {
+                pSources.RemoveAt(pSources.Count - 1);
+            }
+            while (tNewCount > pSources.Count)
+            {
+                pSources.Add(new T());
+            }
+
+            var pFieldCount = pLabelNames.Count;
+            var tSingleItemWidth = (pRect.size.x - pIntervalWidth * (pFieldCount - 1)) / pFieldCount;
+            GUI.enabled = !pDisable;
             for (int i = 0, imax = pSources.Count; i < imax; i++)
             {
-                var tRect = pRect;
-
-                EditorGUI.BeginChangeCheck();
-                tRect.position = pRect.position + new Vector2(0, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 0, 0);
-                var tLabelWidth = pLabelNames[0].Length * 7;
-                tRect.size = new Vector2(tLabelWidth, pItemHeigth);
-                EditorGUI.LabelField(tRect, new GUIContent(pLabelNames[0]));
-                tRect.size = new Vector2(tWidth - tLabelWidth, pItemHeigth);
-                tRect.position = pRect.position + new Vector2(tLabelWidth + tWidth * 0, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 0, 0);
-                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
-                T t1 = default(T);
-                if (pInputFields[0] != null)
+                EditorGUILayout.BeginHorizontal();
+                if (pShowIndex)
                 {
-                    t1 = pInputFields[0]();
-                }
-                //var t1 = EditorGUI.IntField(tRect, pSources[i].width);
-
-                tRect.position = pRect.position + new Vector2(tWidth * 1, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 1, 0);
-                tLabelWidth = pLabelNames[1].Length * 7;
-                tRect.size = new Vector2(tLabelWidth, pItemHeigth);
-                EditorGUI.LabelField(tRect, new GUIContent(pLabelNames[1]));
-                tRect.size = new Vector2(tWidth - tLabelWidth, pItemHeigth);
-                tRect.position = pRect.position + new Vector2(tLabelWidth + tWidth * 1, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 1, 0);
-                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
-                T t2 = default(T);
-                if (pInputFields[1] != null)
-                {
-                    t2 = pInputFields[1]();
+                    EditorGUILayout.LabelField(new GUIContent(i.ToString()), GUILayout.MaxWidth(20));
                 }
 
-                tRect.position = pRect.position + new Vector2(tWidth * 2, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 2, 0);
-                tLabelWidth = pLabelNames[2].Length * 7;
-                tRect.size = new Vector2(tLabelWidth, pItemHeigth);
-                EditorGUI.LabelField(tRect, new GUIContent(pLabelNames[2]));
-                tRect.size = new Vector2(tWidth - tLabelWidth, pItemHeigth);
-                tRect.position = pRect.position + new Vector2(tLabelWidth + tWidth * 2, (i + 1) * pItemHeigth) + new Vector2(pIntervalWidth * 2, 0);
-                if (tRect.xMin >= tRect.xMax) tRect.size = Vector2.one;
-                //var t3 = EditorGUI.IntField(tRect, pSources[i].refreshRate);
-                T t3 = default(T);
-                if (pInputFields[1] != null)
+                List<object> tResults = new List<object>();
+                for (int j = 0; j < pFieldCount; j++)
                 {
-                    t3 = pInputFields[2]();
+                    if (!pLabelNames.IsNullOrEmpty() && j < pLabelNames.Count)
+                    {
+                        EditorGUILayout.LabelField(pLabelNames[j], GUILayout.Width(pLabelNames[j].GetLabelWidth()));
+                    }
+
+                    if (pInputFields[j] != null)
+                    {
+                        tResults.Add(pInputFields[j](Rect.zero, pSources[i]));
+                    }
                 }
 
-                if (EditorGUI.EndChangeCheck())
+                if (GUI.changed)
                 {
                     if (pOnValueChange != null)
                     {
-                        pOnValueChange(i, new List<T>()
-                        {
-                            t1,t2,t3
-                        });
+                        pOnValueChange(i, tResults);
                     }
                 }
+                EditorGUILayout.EndHorizontal();
             }
+            GUI.enabled = true;
+            EditorGUILayout.EndVertical();
         }
         #endregion
     }
