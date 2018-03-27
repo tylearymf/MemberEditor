@@ -24,21 +24,16 @@
                 tVector3 = pInfo.GetValue<Vector3>();
             }
 
-            EditorGUI.BeginDisabledGroup(!pInfo.info.CanWrite);
-            EditorGUI.BeginChangeCheck();
-            var tNewVector3 = EditorGUI.Vector3Field(pInfo.rect, string.Empty, tVector3);
-            if (EditorGUI.EndChangeCheck())
+            GUI.enabled = pInfo.info.CanWrite;
+            var tNewVector3 = GUIHelper.DrawerVector3(tVector3, pInfo.info.Name);
+            GUI.enabled = true;
+            if (GUI.changed)
             {
                 tVector3 = tNewVector3;
                 pInfo.SetValue(tVector3);
             }
             EditorGUI.EndDisabledGroup();
             return tVector3;
-        }
-
-        public override int LayoutHeight(Property pInfo)
-        {
-            return 15;
         }
     }
 }

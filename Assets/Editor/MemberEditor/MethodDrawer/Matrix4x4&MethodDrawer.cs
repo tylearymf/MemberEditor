@@ -24,26 +24,12 @@
             var tInfo = pInfo.info;
             var tParam = tInfo.GetParameters()[pIndex];
             if (!mValues.ContainsKey(pIndex)) mValues.Add(pIndex, Matrix4x4.zero);
-
-            var tValue = mValues[pIndex];
-            var tNewValue = Matrix4x4.zero;
-            var tRect = pInfo.rect;
-            for (int i = 0; i < 4; i++)
+            var tNewValue = GUIHelper.DrawerMatrix4x4(mValues[pIndex]);
+            if (GUI.changed)
             {
-                tRect.position = pInfo.rect.position + new Vector2(0, i * 15);
-                var tVal = EditorGUI.Vector4Field(tRect, string.Empty, new Vector4(tValue[i, 0], tValue[i, 1], tValue[i, 2], tValue[i, 3]));
-                tNewValue[i, 0] = tVal.x;
-                tNewValue[i, 1] = tVal.y;
-                tNewValue[i, 2] = tVal.z;
-                tNewValue[i, 3] = tVal.w;
+                mValues[pIndex] = tNewValue;
             }
-            mValues[pIndex] = tNewValue;
             return mValues[pIndex];
-        }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15 * 4;
         }
     }
 }

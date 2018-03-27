@@ -27,10 +27,5 @@
             //mValues[pIndex] = EditorGUI.Toggle(pInfo.rect, tParam.Name, mValues[pIndex]);
             return mValues[pIndex];
         }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
-        }
     }
 }

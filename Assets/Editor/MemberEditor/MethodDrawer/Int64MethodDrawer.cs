@@ -24,13 +24,8 @@
             var tInfo = pInfo.info;
             var tParam = tInfo.GetParameters()[pIndex];
             if (!mValues.ContainsKey(pIndex)) mValues.Add(pIndex, 0);
-            mValues[pIndex] = EditorGUI.LongField(pInfo.rect, tParam.Name, mValues[pIndex]);
+            mValues[pIndex] = EditorGUILayout.LongField(tParam.Name, mValues[pIndex]);
             return mValues[pIndex];
-        }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
         }
     }
 }

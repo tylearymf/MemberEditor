@@ -29,10 +29,5 @@
             mValues[pIndex] = new Quaternion(tVal.x, tVal.y, tVal.z, tVal.w);
             return mValues[pIndex];
         }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
-        }
     }
 }

@@ -24,13 +24,12 @@
             var tInfo = pInfo.info;
             var tParam = tInfo.GetParameters()[pIndex];
             if (!mValues.ContainsKey(pIndex)) mValues.Add(pIndex, false);
-            mValues[pIndex] = EditorGUI.Toggle(pInfo.rect, tParam.Name, mValues[pIndex]);
+            var tNewVal = EditorGUILayout.Toggle(tParam.Name, mValues[pIndex]);
+            if (GUI.changed)
+            {
+                mValues[pIndex] = tNewVal;
+            }
             return mValues[pIndex];
-        }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
         }
     }
 }

@@ -72,16 +72,6 @@
             return null;
         }
 
-        public int LayoutHeight<T>(T pInfo)
-        {
-            if (mBaseFieldDrawer != null) return mBaseFieldDrawer.LayoutHeight(pInfo as Field);
-            else if (mBasePropertyDrawer != null) return mBasePropertyDrawer.LayoutHeight(pInfo as Property);
-            else if (mBaseMethodDrawer != null) return mBaseMethodDrawer.LayoutHeight(pInfo as Method);
-
-            LogErrorInfo();
-            return MemberHelper.cPropertyDefaultHeight;
-        }
-
         void LogErrorInfo()
         {
             Debug.LogErrorFormat("未实现逻辑！ Type：{0}", mType == null ? string.Empty : mType.FullName);

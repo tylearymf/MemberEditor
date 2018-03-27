@@ -20,19 +20,13 @@
         public override object LayoutDrawer(Field pInfo, int pIndex)
         {
             var tVector3 = pInfo.GetValue<Vector3>();
-            EditorGUI.BeginChangeCheck();
-            var tNewVector3 = EditorGUI.Vector3Field(pInfo.rect, pInfo.info.Name, tVector3);
-            if (EditorGUI.EndChangeCheck())
+            var tNewVector3 = GUIHelper.DrawerVector3(tVector3, pInfo.info.Name);
+            if (GUI.changed)
             {
                 tVector3 = tNewVector3;
                 pInfo.SetValue(tVector3);
             }
             return tVector3;
-        }
-
-        public override int LayoutHeight(Field pInfo)
-        {
-            return 30;
         }
     }
 }

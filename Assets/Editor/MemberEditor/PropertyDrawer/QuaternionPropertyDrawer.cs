@@ -37,10 +37,5 @@
             EditorGUI.EndDisabledGroup();
             return tQuaternion;
         }
-
-        public override int LayoutHeight(Property pInfo)
-        {
-            return 15;
-        }
     }
 }

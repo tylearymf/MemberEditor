@@ -24,13 +24,12 @@
             var tInfo = pInfo.info;
             var tParam = tInfo.GetParameters()[pIndex];
             if (!mValues.ContainsKey(pIndex)) mValues.Add(pIndex, AudioVelocityUpdateMode.Auto);
-            mValues[pIndex] = (AudioVelocityUpdateMode)EditorGUI.EnumPopup(pInfo.rect, tParam.Name, mValues[pIndex]);
+            var tNewVal = (AudioVelocityUpdateMode)EditorGUILayout.EnumPopup(tParam.Name, mValues[pIndex]);
+            if (GUI.changed)
+            {
+                mValues[pIndex] = tNewVal;
+            }
             return (int)mValues[pIndex];
-        }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
         }
     }
 }

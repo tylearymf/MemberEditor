@@ -26,10 +26,5 @@
             mValues[pIndex] = EditorGUI.Vector3Field(pInfo.rect, string.Empty, mValues[pIndex]);
             return mValues[pIndex];
         }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
-        }
     }
 }

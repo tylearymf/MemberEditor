@@ -15,11 +15,5 @@
         /// </summary>
         /// <param name="pInfo"></param>
         public abstract object LayoutDrawer(T pInfo, int pParamIndex = 0);
-
-        /// <summary>
-        /// 返回该成员的布局高度
-        /// </summary>
-        /// <returns></returns>
-        public abstract int LayoutHeight(T pInfo);
     }
 }

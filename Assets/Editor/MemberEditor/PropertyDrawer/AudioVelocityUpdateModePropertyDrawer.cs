@@ -24,21 +24,15 @@
             {
                 tValue = pInfo.GetValue<AudioVelocityUpdateMode>();
             }
-            EditorGUI.BeginDisabledGroup(!pInfo.info.CanWrite);
-            EditorGUI.BeginChangeCheck();
-            var tNewValue = (AudioVelocityUpdateMode)EditorGUI.EnumPopup(pInfo.rect, string.Empty, tValue);
-            if (EditorGUI.EndChangeCheck())
+            GUI.enabled = pInfo.info.CanWrite;
+            var tNewValue = (AudioVelocityUpdateMode)EditorGUILayout.EnumPopup(string.Empty, tValue);
+            GUI.enabled = true;
+            if (GUI.changed)
             {
                 tValue = tNewValue;
                 pInfo.SetValue<int>((int)tValue);
             }
-            EditorGUI.EndDisabledGroup();
             return tValue;
-        }
-
-        public override int LayoutHeight(Property pInfo)
-        {
-            return 15;
         }
     }
 }

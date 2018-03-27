@@ -20,19 +20,13 @@
         public override object LayoutDrawer(Field pInfo, int pIndex)
         {
             var tValue = pInfo.GetValue<String>();
-            EditorGUI.BeginChangeCheck();
-            var tNewValue = EditorGUI.TextField(pInfo.rect, tValue);
-            if (EditorGUI.EndChangeCheck())
+            var tNewValue = EditorGUILayout.TextField(tValue);
+            if (GUI.changed)
             {
                 tValue = tNewValue;
                 pInfo.SetValue<String>(tValue);
             }
             return tValue;
-        }
-
-        public override int LayoutHeight(Field pInfo)
-        {
-            return 15;
         }
     }
 }

@@ -27,11 +27,6 @@
             mValues[pIndex] = (RotationOrder)EditorGUI.EnumPopup(pInfo.rect, tParam.Name, mValues[pIndex]);
             return (int)mValues[pIndex];
         }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
-        }
     }
 }
 

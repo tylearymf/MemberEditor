@@ -24,16 +24,9 @@
         protected UnityEngine.Object mTarget;
         protected IPropertyValueEntry mEntry;
         protected GUIContent mContent;
-        protected Rect mRect;
         protected string mInfoName;
 
         public abstract T info { get; }
-
-        public Rect rect
-        {
-            set { mRect = value; }
-            get { return mRect; }
-        }
 
         public IPropertyValueEntry entry
         {

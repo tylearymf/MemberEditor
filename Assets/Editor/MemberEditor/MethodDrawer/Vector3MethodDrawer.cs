@@ -23,32 +23,14 @@
         {
             var tInfo = pInfo.info;
             if (!mValues.ContainsKey(pIndex)) mValues.Add(pIndex, Vector3.zero);
-            var tName = tInfo.GetParameters()[pIndex].Name;
 
-            var tVal = mValues[pIndex];
-
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(tName, GUILayout.Width(tName.GetLabelWidth() + 5));
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
-            EditorGUILayout.LabelField("X", GUILayout.Width(15));
-            tVal.x = EditorGUILayout.FloatField(tVal.x);
-            EditorGUILayout.LabelField("Y", GUILayout.Width(15));
-            tVal.y = EditorGUILayout.FloatField(tVal.y);
-            EditorGUILayout.LabelField("Z", GUILayout.Width(15));
-            tVal.z = EditorGUILayout.FloatField(tVal.z);
-            EditorGUILayout.EndHorizontal();
+            var tVal = GUIHelper.DrawerVector3(mValues[pIndex], tInfo.GetParameters()[pIndex].Name);
 
             if (GUI.changed)
             {
                 mValues[pIndex] = tVal;
             }
             return mValues[pIndex];
-        }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 0;
         }
     }
 }

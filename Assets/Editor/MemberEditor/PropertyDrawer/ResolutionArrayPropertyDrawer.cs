@@ -32,7 +32,7 @@
             }
             if (mValues == null) return null;
 
-            MemberHelper.DrawerListItem(mValues, new List<string>() { "width", "height", "refreshRate" }, pRect: pInfo.rect, pDisable: !pInfo.info.CanWrite,
+            GUIHelper.DrawerListItem(mValues, new List<string>() { "width", "height", "refreshRate" }, pRect: pInfo.rect, pDisable: !pInfo.info.CanWrite,
                pShowIndex: ref mShowIndex, pIntervalWidth: 10, pOnValueChange: (pIdx, pVal) =>
             {
                 mValues[pIdx] = new Resolution()
@@ -57,11 +57,6 @@
                  },
             });
             return mValues.ToArray();
-        }
-
-        public override int LayoutHeight(Property pInfo)
-        {
-            return 0;
         }
     }
 }

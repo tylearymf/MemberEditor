@@ -29,16 +29,12 @@
                 var tMemberTypeName = tParam.ParameterType.FullName;
                 var tDrawerInfo = tInfoDic.TryGetValue(tMemberTypeName, null);
 
-                var tHeight = tDrawerInfo == null ? MemberHelper.cPropertyDefaultHeight : tDrawerInfo.LayoutHeight(pEntry.SmartValue);
-                var tRect = tHeight == 0 ? Rect.zero : EditorGUILayout.GetControlRect(false, tHeight);
-
-                pEntry.SmartValue.rect = new Rect(tRect.position, tRect.size);
                 pEntry.SmartValue.entry = pEntry;
                 pEntry.SmartValue.content = pContent;
 
                 if (tDrawerInfo == null)
                 {
-                    EditorGUI.LabelField(pEntry.SmartValue.rect, pEntry.SmartValue.NotImplementedDescription(i));
+                    EditorGUILayout.LabelField(pEntry.SmartValue.NotImplementedDescription(i));
                     tDrawButton = false;
                 }
                 else

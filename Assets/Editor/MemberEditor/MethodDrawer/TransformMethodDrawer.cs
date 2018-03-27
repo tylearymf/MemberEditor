@@ -27,10 +27,5 @@
             mValues[pIndex] = EditorGUI.ObjectField(pInfo.rect, tParam.Name, mValues[pIndex], typeof(Transform), true) as Transform;
             return mValues[pIndex];
         }
-
-        public override int LayoutHeight(Method pInfo)
-        {
-            return 15;
-        }
     }
 }

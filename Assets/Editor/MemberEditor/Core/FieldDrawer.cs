@@ -19,11 +19,6 @@
             var tInfoDic = MemberHelper.GetDrawInfos(System.Reflection.MemberTypes.Field);
             if (tInfoDic == null) return;
 
-            var tHeight = 0;
-            if (tInfoDic.ContainsKey(tMemberTypeName)) tHeight = tInfoDic[tMemberTypeName].LayoutHeight(pEntry.SmartValue);
-            else tHeight = MemberHelper.cPropertyDefaultHeight;
-
-            pEntry.SmartValue.rect = EditorGUILayout.GetControlRect(false, tHeight);
             pEntry.SmartValue.entry = pEntry;
             pEntry.SmartValue.content = pContent;
 
@@ -33,7 +28,7 @@
             }
             else
             {
-                EditorGUI.LabelField(pEntry.SmartValue.rect, pEntry.SmartValue.NotImplementedDescription());
+                EditorGUILayout.LabelField(pEntry.SmartValue.NotImplementedDescription());
             }
         }
     }

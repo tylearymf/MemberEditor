@@ -21,19 +21,13 @@
         {
             var tValue = false;
             tValue = pInfo.GetValue<bool>();
-            EditorGUI.BeginChangeCheck();
-            var tNewValue = EditorGUI.Toggle(pInfo.rect, string.Empty, tValue);
-            if (EditorGUI.EndChangeCheck())
+            var tNewValue = EditorGUILayout.Toggle(string.Empty, tValue);
+            if (GUI.changed)
             {
                 tValue = tNewValue;
                 pInfo.SetValue<bool>(tValue);
             }
             return tValue;
-        }
-
-        public override int LayoutHeight(Field pInfo)
-        {
-            return 15;
         }
     }
 }
