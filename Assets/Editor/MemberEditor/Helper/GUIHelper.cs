@@ -6,9 +6,22 @@
     using UnityEditor;
     using UnityEngine;
 
+    public struct FuncInfo<T>
+    {
+        public T value { get; set; }
+        public bool refresh { set; get; }
+    }
+
+    public struct FuncInfo1<T>
+    {
+        public T value { get; set; }
+        public int index1 { get; set; }
+        public int index2 { get; set; }
+    }
+
     static public class GUIHelper
     {
-        static public void ListField<T, Class>(IList<T> pSources, List<string> pLabelNames, bool pDisable, ref bool pShowIndex, Action<int, List<object>> pOnValueChange, BaseDrawer<Class> pDrawer, params Func<T, object>[] pInputFields)
+        static public void ListField<T, Class>(IList<T> pSources, List<string> pLabelNames, bool pDisable, ref bool pShowIndex, Action<int, List<object>> pOnValueChange, BaseDrawer<Class> pDrawer, params Func<FuncInfo1<T>, FuncInfo<T>>[] pInputFields)
         {
             if (pSources == null || pInputFields.IsNullOrEmpty()) return;
 
@@ -44,6 +57,7 @@
 
             var pFieldCount = pInputFields.GetCountIgnoreNull();
             GUI.enabled = !pDisable;
+            bool tBreak = false;
             for (int i = 0, imax = pSources.GetCountIgnoreNull(); i < imax; i++)
             {
                 EditorGUILayout.BeginHorizontal();
@@ -52,7 +66,7 @@
                     EditorGUILayout.LabelField(new GUIContent(i.ToString()), GUILayout.MaxWidth(20));
                 }
 
-                List<object> tResults = new List<object>();
+                var tResults = new List<object>();
                 for (int j = 0; j < pFieldCount; j++)
                 {
                     if (!pLabelNames.IsNullOrEmpty() && j < pLabelNames.Count)
@@ -62,10 +76,17 @@
 
                     if (pInputFields[j] != null)
                     {
-                        tResults.Add(pInputFields[j](pSources[i]));
+                        var tFuncInfo = pInputFields[j](new FuncInfo1<T>() { value = pSources[i], index1 = i, index2 = j });
+                        if (tFuncInfo.refresh)
+                        {
+                            tBreak = true;
+                            break;
+                        }
+                        tResults.Add(tFuncInfo.value);
                     }
                 }
 
+                if (tBreak) break;
                 if (GUI.changed)
                 {
                     if (pOnValueChange != null)

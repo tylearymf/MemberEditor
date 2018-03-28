@@ -26,6 +26,8 @@
         public const BindingFlags cStaticPropertyFlags = BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic;
 
         static Dictionary<MemberTypes, Dictionary<string, DrawerInfo>> sDrawerInfoDic;
+        static Dictionary<MemberTypes, Dictionary<string, IListDrawer>> sIListDrawerDic;
+
         static Dictionary<string, Type> sAllTypes;
         static HashSet<string> sIngoreNamespaces = new HashSet<string>()
         {
@@ -52,6 +54,10 @@
         {
             get { return sAllTypes; }
         }
+        static public Dictionary<MemberTypes, Dictionary<string, IListDrawer>> iListDrawerDic
+        {
+            get { return sIListDrawerDic; }
+        }
         #endregion
 
         #region init
@@ -63,24 +69,47 @@
 
         static void InitDrawerInfoDic()
         {
-            if (!sDrawerInfoDic.IsNullOrEmpty()) return;
-            sDrawerInfoDic = new Dictionary<MemberTypes, Dictionary<string, DrawerInfo>>();
-            var tAssembly = Assembly.GetAssembly(typeof(BaseDrawer<>));
-            if (tAssembly == null) return;
-            var tCustomList = tAssembly.GetTypes().Where(x => x.GetCustomAttributes(typeof(MemeberDrawerAttribute), false).Length == 1).ToList();
-            if (tCustomList == null) return;
-            foreach (var item in tCustomList)
+            if (sDrawerInfoDic.IsNullOrEmpty())
             {
-                var tAtt = item.GetCustomAttributes(typeof(MemeberDrawerAttribute), false);
-                if (tAtt == null || tAtt.Length != 1) continue;
-                var tDrawerAtt = (MemeberDrawerAttribute)tAtt[0];
-                var tMemberType = tDrawerAtt.memberType;
-                if (!sDrawerInfoDic.ContainsKey(tMemberType))
+                sDrawerInfoDic = new Dictionary<MemberTypes, Dictionary<string, DrawerInfo>>();
+                var tAssembly = Assembly.GetAssembly(typeof(BaseDrawer<>));
+                if (tAssembly == null) return;
+                var tCustomList = tAssembly.GetTypes().Where(x => x.GetCustomAttributes(typeof(MemeberDrawerAttribute), false).Length == 1).ToList();
+                if (tCustomList == null) return;
+                foreach (var item in tCustomList)
                 {
-                    sDrawerInfoDic.Add(tMemberType, new Dictionary<string, DrawerInfo>());
+                    var tAtt = item.GetCustomAttributes(typeof(MemeberDrawerAttribute), false);
+                    if (tAtt == null || tAtt.Length != 1) continue;
+                    var tDrawerAtt = (MemeberDrawerAttribute)tAtt[0];
+                    var tMemberType = tDrawerAtt.memberType;
+                    if (!sDrawerInfoDic.ContainsKey(tMemberType))
+                    {
+                        sDrawerInfoDic.Add(tMemberType, new Dictionary<string, DrawerInfo>());
+                    }
+                    var tDrawer = new DrawerInfo(item, tMemberType);
+                    sDrawerInfoDic[tMemberType][tDrawer.typeName] = tDrawer;
                 }
-                var tDrawer = new DrawerInfo(item, tMemberType);
-                sDrawerInfoDic[tMemberType][tDrawer.typeName] = tDrawer;
+            }
+            if (sIListDrawerDic.isNullOrEmpty())
+            {
+                sIListDrawerDic = new Dictionary<MemberTypes, Dictionary<string, IListDrawer>>();
+                var tAssembly = Assembly.GetAssembly(typeof(IListDrawer));
+                if (tAssembly == null) return;
+                var tCustomList = tAssembly.GetTypes().Where(x => x.GetCustomAttributes(typeof(IListDrawerAttribute), false).Length == 1).ToList();
+                if (tCustomList == null) return;
+                foreach (var item in tCustomList)
+                {
+                    var tAtt = item.GetCustomAttributes(typeof(IListDrawerAttribute), false);
+                    if (tAtt == null || tAtt.Length != 1) continue;
+                    var tDrawerAtt = (IListDrawerAttribute)tAtt[0];
+                    var tMemberType = tDrawerAtt.memberType;
+                    if (!sIListDrawerDic.ContainsKey(tMemberType))
+                    {
+                        sIListDrawerDic.Add(tMemberType, new Dictionary<string, IListDrawer>());
+                    }
+                    var tIListDrawer = Activator.CreateInstance(item) as IListDrawer;
+                    sIListDrawerDic[tMemberType][tIListDrawer.typeName] = tIListDrawer;
+                }
             }
         }
 
@@ -140,6 +169,12 @@
             if (drawerInfoDic == null || !drawerInfoDic.ContainsKey(pMemberTypes)) return null;
             return drawerInfoDic[pMemberTypes];
         }
-        #endregion        
+
+        static public Dictionary<string, IListDrawer> GetIListDrawers(MemberTypes pMemberTypes)
+        {
+            if (iListDrawerDic == null || !iListDrawerDic.ContainsKey(pMemberTypes)) return null;
+            return iListDrawerDic[pMemberTypes];
+        }
+        #endregion
     }
 }

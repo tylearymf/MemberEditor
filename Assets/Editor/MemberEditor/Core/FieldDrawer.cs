@@ -24,9 +24,9 @@
             foreach (var tType in tInfo.FieldType.GetParentTypes())
             {
                 var tMemberTypeName = string.Empty;
-                if (tType.IsGenericType && tType.GetGenericTypeDefinition() == typeof(List<>))
+                if (tType.IsGenericType && tType.GetGenericTypeDefinition() == typeof(IList<>))
                 {
-                    tMemberTypeName = typeof(List<>).FullName;
+                    tMemberTypeName = typeof(IList<>).FullName;
                 }
                 else
                 {

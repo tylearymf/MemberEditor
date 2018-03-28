@@ -20,7 +20,8 @@
         {
             get
             {
-                return typeof(Resolution[]).FullName;
+                return string.Empty;
+                //return typeof(Resolution[]).FullName;
             }
         }
 
@@ -32,30 +33,30 @@
             }
             if (mValues == null) return null;
 
-            GUIHelper.ListField(mValues, mLabelNames, pDisable: !pInfo.info.CanWrite,
-               pShowIndex: ref mShowIndex, pOnValueChange: (pIdx, pVal) =>
-            {
-                mValues[pIdx] = new Resolution()
-                {
-                    width = (int)pVal[0],
-                    height = (int)pVal[1],
-                    refreshRate = (int)pVal[2],
-                };
-            }, pInputFields: new Func<Resolution, object>[]
-            {
-                (pVal) =>
-                {
-                    return EditorGUILayout.IntField(pVal.width);
-                },
-                (pVal) =>
-                {
-                    return EditorGUILayout.IntField(pVal.height);
-                 },
-                 (pVal) =>
-                 {
-                     return EditorGUILayout.IntField(pVal.refreshRate);
-                 },
-            }, pDrawer: this);
+            //GUIHelper.ListField(mValues, mLabelNames, pDisable: !pInfo.info.CanWrite,
+            //   pShowIndex: ref mShowIndex, pOnValueChange: (pIdx, pVal) =>
+            //{
+            //    mValues[pIdx] = new Resolution()
+            //    {
+            //        width = (int)pVal[0],
+            //        height = (int)pVal[1],
+            //        refreshRate = (int)pVal[2],
+            //    };
+            //}, pInputFields: new Func<Resolution, object>[]
+            //{
+            //    (pVal) =>
+            //    {
+            //        return EditorGUILayout.IntField(pVal.width);
+            //    },
+            //    (pVal) =>
+            //    {
+            //        return EditorGUILayout.IntField(pVal.height);
+            //     },
+            //     (pVal) =>
+            //     {
+            //         return EditorGUILayout.IntField(pVal.refreshRate);
+            //     },
+            //}, pDrawer: this);
             return mValues;
         }
     }
