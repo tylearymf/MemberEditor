@@ -20,34 +20,40 @@
             var tInfoDic = MemberHelper.GetDrawInfos(System.Reflection.MemberTypes.Method);
             if (tInfoDic == null) return;
 
-            var tDrawButton = true;
+            var tIsDrawerAll = true;
             var tParmTypes = tMethodInfo.GetParameters();
             object[] tParamObjs = tParmTypes.IsNullOrEmpty() ? null : new object[tParmTypes.Length];
             for (int i = 0, imax = tParmTypes.Length; i < imax; i++)
             {
+                var tIsDrawer = false;
                 var tParam = tParmTypes[i];
-                var tMemberTypeName = tParam.ParameterType.FullName;
-                var tDrawerInfo = tInfoDic.TryGetValue(tMemberTypeName, null);
-
                 pEntry.SmartValue.entry = pEntry;
                 pEntry.SmartValue.content = pContent;
 
-                if (tDrawerInfo == null)
+                foreach (var tType in tParam.ParameterType.GetParentTypes())
                 {
-                    EditorGUILayout.LabelField(pEntry.SmartValue.NotImplementedDescription(i));
-                    tDrawButton = false;
+                    var tMemberTypeName = tType.FullName;
+                    var tDrawerInfo = tInfoDic.TryGetValue(tMemberTypeName, null);
+                    if (tDrawerInfo != null)
+                    {
+                        tIsDrawer = true;
+                        var tObj = tDrawerInfo.LayoutDrawer(pEntry.SmartValue, i);
+                        tParamObjs[i] = tObj;
+                        break;
+                    }
                 }
-                else
+
+                if (!tIsDrawer)
                 {
-                    var tObj = tDrawerInfo.LayoutDrawer(pEntry.SmartValue, i);
-                    tParamObjs[i] = tObj;
+                    tIsDrawerAll = false;
+                    EditorGUILayout.LabelField(pEntry.SmartValue.NotImplementedDescription(i));
                 }
             }
 
             GUI.skin.button.richText = true;
             GUI.color = new Color(0.3f, 0.8f, 0.8f, 1);
 
-            if (tDrawButton && GUILayout.Button(string.Format("<color=#CEA736FF>点击调用该方法</color>“{0}”", tMethodInfo.Name)))
+            if (tIsDrawerAll && GUILayout.Button(string.Format("<color=#CEA736FF>点击调用该方法</color>“{0}”", tMethodInfo.Name)))
             {
                 tMethod.Call(tParamObjs);
             }

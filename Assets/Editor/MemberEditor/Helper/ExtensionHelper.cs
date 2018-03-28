@@ -26,6 +26,11 @@
             return pCollection == null || pCollection.Count == 0;
         }
 
+        static public bool isNullOrEmpty(this ICollection pCollection)
+        {
+            return pCollection == null || pCollection.Count == 0;
+        }
+
         static public bool IsNullOrEmpty(this string pStr)
         {
             return string.IsNullOrEmpty(pStr);
@@ -51,9 +56,40 @@
             return tHashSet.ToList();
         }
 
-        static public int GetLabelWidth(this string pStr)
+        static public int GetLabelWidth<T>(this string pStr, BaseDrawer<T> pDrawer)
         {
+            if (pDrawer != null)
+            {
+                var tType = pDrawer.GetType();
+                var tCustomArrList = tType.GetCustomAttributes(typeof(MemeberDrawerAttribute), false);
+                if (tCustomArrList != null && tCustomArrList.Length == 1)
+                {
+                    var tDrawerAtt = (MemeberDrawerAttribute)tCustomArrList[0];
+                    switch (tDrawerAtt.memberType)
+                    {
+                        case MemberTypes.Method:
+                            return pStr.IsNullOrEmpty() ? 0 : (pStr.Length * 7 + 5);
+                    }
+                }
+            }
             return pStr.IsNullOrEmpty() ? 0 : pStr.Length * 7;
+        }
+
+        public static IEnumerable<Type> GetParentTypes(this Type pType)
+        {
+            if ((pType == null) || (pType.BaseType == null)) yield break;
+
+            var tBaseType = pType;
+            foreach (var tType in tBaseType.GetInterfaces())
+            {
+                yield return tType;
+            }
+
+            while (tBaseType != null)
+            {
+                yield return tBaseType;
+                tBaseType = tBaseType.BaseType;
+            }
         }
     }
 }

@@ -67,13 +67,13 @@
             sDrawerInfoDic = new Dictionary<MemberTypes, Dictionary<string, DrawerInfo>>();
             var tAssembly = Assembly.GetAssembly(typeof(BaseDrawer<>));
             if (tAssembly == null) return;
-            var tCustomList = tAssembly.GetTypes().Where(x => x.GetCustomAttributes(typeof(MemeberDrawerAttribute), false).Length > 0).ToList();
+            var tCustomList = tAssembly.GetTypes().Where(x => x.GetCustomAttributes(typeof(MemeberDrawerAttribute), false).Length == 1).ToList();
             if (tCustomList == null) return;
             foreach (var item in tCustomList)
             {
-                var tAtt = item.GetCustomAttributes(false).Single(x => x is MemeberDrawerAttribute);
-                if (tAtt == null) continue;
-                var tDrawerAtt = (MemeberDrawerAttribute)tAtt;
+                var tAtt = item.GetCustomAttributes(typeof(MemeberDrawerAttribute), false);
+                if (tAtt == null || tAtt.Length != 1) continue;
+                var tDrawerAtt = (MemeberDrawerAttribute)tAtt[0];
                 var tMemberType = tDrawerAtt.memberType;
                 if (!sDrawerInfoDic.ContainsKey(tMemberType))
                 {

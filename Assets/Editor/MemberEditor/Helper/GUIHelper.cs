@@ -8,32 +8,43 @@
 
     static public class GUIHelper
     {
-        static public void DrawerListItem<T>(List<T> pSources, List<string> pLabelNames, Rect pRect, bool pDisable, ref bool pShowIndex, int pIntervalWidth, Action<int, List<object>> pOnValueChange, params Func<Rect, T, object>[] pInputFields) where T : new()
+        static public void ListField<T, Class>(IList<T> pSources, List<string> pLabelNames, bool pDisable, ref bool pShowIndex, Action<int, List<object>> pOnValueChange, BaseDrawer<Class> pDrawer, params Func<T, object>[] pInputFields)
         {
-            if (pSources.IsNullOrEmpty() || pLabelNames.IsNullOrEmpty() || pInputFields.IsNullOrEmpty() || (pLabelNames.GetCountIgnoreNull() != pInputFields.GetCountIgnoreNull())) return;
+            if (pSources == null || pInputFields.IsNullOrEmpty()) return;
 
             EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
             GUI.enabled = !pDisable;
             EditorGUILayout.LabelField("size", GUILayout.Width(30));
-            var tNewCount = EditorGUILayout.IntField(pSources.Count, GUILayout.MaxWidth(70));
+            var tNewCount = EditorGUILayout.IntField(pSources.GetCountIgnoreNull(), GUILayout.MaxWidth(70));
             GUI.enabled = true;
             EditorGUILayout.LabelField("show index", GUILayout.Width(70));
             pShowIndex = EditorGUILayout.Toggle(pShowIndex, GUILayout.MaxWidth(100));
-            EditorGUILayout.EndHorizontal();
-            while (tNewCount < pSources.Count)
+
+            GUI.enabled = !pDisable;
+            if (GUILayout.Button("+"))
             {
-                pSources.RemoveAt(pSources.Count - 1);
+                ++tNewCount;
             }
-            while (tNewCount > pSources.Count)
+            if (GUILayout.Button("-"))
             {
-                pSources.Add(new T());
+                --tNewCount;
+            }
+            GUI.enabled = true;
+
+            EditorGUILayout.EndHorizontal();
+            while (pSources.GetCountIgnoreNull() > 0 && tNewCount < pSources.GetCountIgnoreNull())
+            {
+                pSources.RemoveAt(pSources.GetCountIgnoreNull() - 1);
+            }
+            while (tNewCount > pSources.GetCountIgnoreNull())
+            {
+                pSources.Add(default(T));
             }
 
-            var pFieldCount = pLabelNames.Count;
-            var tSingleItemWidth = (pRect.size.x - pIntervalWidth * (pFieldCount - 1)) / pFieldCount;
+            var pFieldCount = pInputFields.GetCountIgnoreNull();
             GUI.enabled = !pDisable;
-            for (int i = 0, imax = pSources.Count; i < imax; i++)
+            for (int i = 0, imax = pSources.GetCountIgnoreNull(); i < imax; i++)
             {
                 EditorGUILayout.BeginHorizontal();
                 if (pShowIndex)
@@ -46,12 +57,12 @@
                 {
                     if (!pLabelNames.IsNullOrEmpty() && j < pLabelNames.Count)
                     {
-                        EditorGUILayout.LabelField(pLabelNames[j], GUILayout.Width(pLabelNames[j].GetLabelWidth()));
+                        EditorGUILayout.LabelField(pLabelNames[j], GUILayout.Width(pLabelNames[j].GetLabelWidth(pDrawer)));
                     }
 
                     if (pInputFields[j] != null)
                     {
-                        tResults.Add(pInputFields[j](Rect.zero, pSources[i]));
+                        tResults.Add(pInputFields[j](pSources[i]));
                     }
                 }
 
@@ -68,12 +79,15 @@
             EditorGUILayout.EndVertical();
         }
 
-        static public Vector3 DrawerVector3(Vector3 pVal, string pName)
+        static public Vector3 Vector3Field<T>(Vector3 pVal, BaseDrawer<T> pDrawer, string pName = "")
         {
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(pName, GUILayout.Width(pName.GetLabelWidth() + 5));
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
+            if (!pName.IsNullOrEmpty())
+            {
+                EditorGUILayout.LabelField(pName, GUILayout.Width(pName.GetLabelWidth(pDrawer)));
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
+            }
             EditorGUILayout.LabelField("X", GUILayout.Width(15));
             pVal.x = EditorGUILayout.FloatField(pVal.x);
             EditorGUILayout.LabelField("Y", GUILayout.Width(15));
@@ -85,7 +99,29 @@
             return pVal;
         }
 
-        static public Matrix4x4 DrawerMatrix4x4(Matrix4x4 pValue)
+        static public Vector4 Vector4Field<T>(Vector4 pVal, BaseDrawer<T> pDrawer, string pName = "")
+        {
+            EditorGUILayout.BeginHorizontal();
+            if (!pName.IsNullOrEmpty())
+            {
+                EditorGUILayout.LabelField(pName, GUILayout.Width(pName.GetLabelWidth(pDrawer)));
+                EditorGUILayout.Space();
+                EditorGUILayout.Space();
+            }
+            EditorGUILayout.LabelField("X", GUILayout.Width(15));
+            pVal.x = EditorGUILayout.FloatField(pVal.x);
+            EditorGUILayout.LabelField("Y", GUILayout.Width(15));
+            pVal.y = EditorGUILayout.FloatField(pVal.y);
+            EditorGUILayout.LabelField("Z", GUILayout.Width(15));
+            pVal.z = EditorGUILayout.FloatField(pVal.z);
+            EditorGUILayout.LabelField("W", GUILayout.Width(15));
+            pVal.w = EditorGUILayout.FloatField(pVal.w);
+            EditorGUILayout.EndHorizontal();
+
+            return pVal;
+        }
+
+        static public Matrix4x4 Matrix4x4Field(Matrix4x4 pValue)
         {
             EditorGUILayout.BeginVertical();
             {

@@ -14,7 +14,6 @@
         {
             if (pEntry.SmartValue == null || pEntry.SmartValue.info == null) return;
             var tInfo = pEntry.SmartValue.info;
-            var tMemberTypeName = tInfo.PropertyType.ToString();
 
             var tInfoDic = MemberHelper.GetDrawInfos(System.Reflection.MemberTypes.Property);
             if (tInfoDic == null) return;
@@ -22,11 +21,19 @@
             pEntry.SmartValue.entry = pEntry;
             pEntry.SmartValue.content = pContent;
 
-            if (tInfoDic.ContainsKey(tMemberTypeName) && tInfoDic[tMemberTypeName] != null)
+            var tIsDrawer = false;
+            foreach (var tType in tInfo.PropertyType.GetParentTypes())
             {
-                tInfoDic[tMemberTypeName].LayoutDrawer(pEntry.SmartValue);
+                var tMemberTypeName = tType.ToString();
+                if (tInfoDic.ContainsKey(tMemberTypeName) && tInfoDic[tMemberTypeName] != null)
+                {
+                    tIsDrawer = true;
+                    tInfoDic[tMemberTypeName].LayoutDrawer(pEntry.SmartValue);
+                    break;
+                }
             }
-            else
+
+            if (!tIsDrawer)
             {
                 EditorGUILayout.LabelField(pEntry.SmartValue.NotImplementedDescription());
             }
