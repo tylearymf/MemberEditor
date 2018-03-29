@@ -1,0 +1,9 @@
+脚本中有AA2、B1这几个方法，但是搜索不到
+
+搜索出来的多个List成员，勾选showIndex，其它的也会同步变化
+
+IList showindex 要有个默认值（全局的）可以在设置界面里面修改
+
+List TestInfo 单个Item后面加个按钮 打开单个TestInfo详细界面（这个暂时不弄）
+
+搞个MiniEditorWindow支持传一个对象进去，然后查看该对象的所有信息
